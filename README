@@ -1,0 +1,33 @@
+NAME
+PHP-installer for centos8
+
+SYNOPSIS
+./PHP-installer.sh [PHP VERSION] [MAX THREADS]
+
+DESCRIPTION
+Given a PHP VERSION and a MAX THREADS (most threads used at one time during the 'make' phases of the builds),
+PHP-installer will download and install this version from source (Github). The script also uses this
+version's own PECL installer to install 5 extensions: pecl_http, memcache, oauth, seaslog and swoole. Finally it will
+install Xdebug from source and install it only for this PHP version.
+
+All installation and binary files for this PHP version and its extensions are located inside the /opt/php-<version> directory.
+
+Installing in this way allows users to easily find any files related to a particular PHP version, make code changes and
+recompile the PHP version in a single place and also pull files from Github.
+This method also installs extensions solely for that version without interfering with
+the system installed php, or any other PHP versions previously downloaded with this script.
+
+USAGE
+Once completed, the requested php version can be executed by calling:
+$ php-<ver>
+from the command line.
+
+DISADVANTAGES
+The pitfall of doing an install in this way is that if the /opt/php-<version> directory is deleted, a dangling symlink will be left in the /usr/bin. Updating
+the user's $PATH variable to include this wasn't considered, as all binaries (such as pear, pecl, phpcli, etc) would need to be renamed and this risks
+affecting the already-installed PHP version, thus a single symlink to the binary in /usr/bin is used instead (renamed
+to 'php-<ver>', thus 'php' continues to be the system-wide php executable).
+
+Any updates/installs will need to use that PHP's pecl rather than the system-wide pecl. For example:
+$ /opt/php-8.0/bin/pecl install pecl_http
+must be used to install pecl_http on the php-8.0 version.
