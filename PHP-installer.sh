@@ -41,7 +41,7 @@ pear="$phpdir"/bin/pear
 #	"$pecl" upgrade --force
 #fi
 printf "\n" | "$pecl" install raphf
-if [[ "$vernum" == 7.4 ]]; then
+if [[ ! "$vernum" == 8.0 ]]; then
   echo "extension=raphf.so" >> "$phpini"
   printf "\n" | "$pecl" install propro
   echo "extension=propro.so" >> "$phpini"
@@ -69,7 +69,7 @@ else
 #	echo "extension=http" >> "$phpini"
 fi
 
-if [[ "$vernum" == 7.4 ]]; then
+if [[ ! "$vernum" == 8.0 ]]; then
 #  echo "extension=memcache.so" >> "$phpini"
   echo "extension=oauth.so" >> "$phpini"
   echo "extension=seaslog.so" >> "$phpini"

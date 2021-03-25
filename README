@@ -13,7 +13,8 @@ install Xdebug from source and install it only for this PHP version.
 All installation and binary files for this PHP version and its extensions are located inside the /opt/php-<version> directory.
 
 Installing in this way allows users to easily find any files related to a particular PHP version, make code changes and
-recompile the PHP version in a single place and also pull files from Github.
+recompile the PHP version in a single place and also pull files from Github. Separating installs from /usr/local/bin and /usr/bin
+to /opt also allows users to know which software needs to be updated manually rather than through the system's package manager.
 This method also installs extensions solely for that version without interfering with
 the system installed php, or any other PHP versions previously downloaded with this script.
 
@@ -31,3 +32,7 @@ to 'php-<ver>', thus 'php' continues to be the system-wide php executable).
 Any updates/installs will need to use that PHP's pecl rather than the system-wide pecl. For example:
 $ /opt/php-8.0/bin/pecl install pecl_http
 must be used to install pecl_http on the php-8.0 version.
+
+SUPPORTED PHP VERSIONS
+8.0, 7.3 and 7.4 can be used with this script, future work can see more added, but these are the main stable versions of PHP
+at the time of writing.
