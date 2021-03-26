@@ -36,3 +36,14 @@ must be used to install pecl_http on the php-8.0 version.
 SUPPORTED PHP VERSIONS
 8.0, 7.3 and 7.4 can be used with this script, future work can see more added, but these are the main stable versions of PHP
 at the time of writing.
+
+DEPENDENCIES
+"Development tools"
+mysql-devel
+php-devel
+re2c
+
+PROBLEMS
+This script cannot be run concurrently. This is due to the PEAR directory storing its cache and installs to /tmp/pear/ by default,
+meaning concurrent installs would share this directory. Attempts were made to change this value (line 32)
+but no matter which directory, or what permissions, changing this setting only ever returns an error.
