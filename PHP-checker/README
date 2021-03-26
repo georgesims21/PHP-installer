@@ -11,6 +11,10 @@ are loaded and functional.
 
 This script provides icinga2 check output, once per minute.
 
+OUTPUT
+The script will give icinga2 formatted output to STDOUT. Other output can be found in the /tmp/php-checker.log
+file, if any errors occur during this script, you will find the output in this log.
+
 SUPPORTED PHP VERSIONS
 8.0, 7.3 and 7.4 can be used with this script, future work can see more added, but these are the main stable versions of PHP
 at the time of writing.

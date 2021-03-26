@@ -1,4 +1,7 @@
 #!/bin/bash
+# PHP-installer
+# Please read the README located in this directory before use.
+# Created by: George Sims
 
 set -e
 
@@ -129,6 +132,15 @@ echo "==> 'Adding zend_extension=$extdir/xdebug.so' to $phpini"
 echo "zend_extension=$extdir/xdebug.so" >> "$phpini"
 echo "==> Install complete"
 echo "==> $version can now be used, e.g. '$ $version -v'"
+
+# --- Make copies of config files for 2nd script to check ---
+configdir="$phpdir"/.config
 # Create copy of php.ini file to allow the next script to check for changes
 mkdir "$phpdir"/.config
 cp "$phpini" "$phpdir"/.config/php.ini_backup
+# Create copies of all std extensions into /opt/php-<ver>/.config
+for dir in $phpdir/ext/*/; do
+  extension=$(basename "$dir")
+  mkdir -p "$configdir"/"$extension"
+  cp "$dir"/config.{m4,w32} "$configdir"/"$extension"
+done
