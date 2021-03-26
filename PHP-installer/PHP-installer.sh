@@ -130,10 +130,9 @@ cp "$xdebdir"/modules/xdebug.so "$extdir"
 # Manually write this to the php.ini file
 echo "==> 'Adding zend_extension=$extdir/xdebug.so' to $phpini"
 echo "zend_extension=$extdir/xdebug.so" >> "$phpini"
-echo "==> Install complete"
-echo "==> $version can now be used, e.g. '$ $version -v'"
 
 # --- Make copies of config files for 2nd script to check ---
+echo "==> Creating copies of all config files"
 configdir="$phpdir"/.config
 # Create copy of php.ini file to allow the next script to check for changes
 mkdir "$phpdir"/.config
@@ -144,3 +143,5 @@ for dir in $phpdir/ext/*/; do
   mkdir -p "$configdir"/"$extension"
   cp "$dir"/config.{m4,w32} "$configdir"/"$extension"
 done
+echo "==> $version binary can now be used, e.g. '$ $version -v'. Please use PHP-checker script beforehand"
+echo "==> Install complete"
