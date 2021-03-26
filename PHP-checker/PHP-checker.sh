@@ -5,11 +5,17 @@
 
 vernum=$1
 loop=$2
+runexts=$3
 # If no user input don't loop
 if [[ -z "$loop" ]]; then
-  loop=0
+  loop=false
 else
-  loop=1
+  loop=true
+fi
+if [[ -z "$runexts" ]]; then
+  runexts=false
+else
+  runexts=true
 fi
 php=php-"$vernum"
 phpdir=/opt/"$php"
@@ -82,33 +88,41 @@ check_configs() {
   return $?
 }
 
-# --- Check php config file for changes ---
-diff "$phpdir"/lib/php.ini "$configdir"/php.ini_backup
-echo_stdout "phpini_config: $?"
+while :; do
 
-# --- Check extensions are loaded and functional ---
-ext_loaded Xdebug
-ext_loaded http
-ext_loaded OAuth
-ext_loaded SeasLog
-ext_loaded swoole
-if [[ "$vernum" == 8.0 ]]; then
-  ext_loaded memcache
-fi
+  # --- Check php config file for changes ---
+  diff "$phpdir"/lib/php.ini "$configdir"/php.ini_backup
+  echo_stdout "phpini_config: $?"
 
-# --- Check common extension's config files for changes ---
-for dir in $phpdir/ext/*/; do
-  # get extension name from path (no risk of spaces in path names here)
-  extension=$(basename "$dir")
-  check_configs "$dir" "$extension"
+  # --- Check extensions are loaded and functional ---
+  ext_loaded Xdebug
+  ext_loaded http
+  ext_loaded OAuth
+  ext_loaded SeasLog
+  ext_loaded swoole
+  if [[ "$vernum" == 8.0 ]]; then
+    ext_loaded memcache
+  fi
+
+  # --- Check common extension's config files for changes ---
+  for dir in $phpdir/ext/*/; do
+    # get extension name from path
+    extension=$(basename "$dir")
+    check_configs "$dir" "$extension"
+  done
+
+  # --- Run tests (if -e flag given) ---
+  if [[ "$runexts" = true ]]; then
+    run_php_test
+    run_tests oauth
+    run_tests pecl_http
+    run_tests seaslog
+    run_tests swoole
+    if [[ "$vernum" == 8.0 ]]; then
+      run_tests memcache
+    fi
+  fi
+  if [[ "$loop" = false ]]; then
+    break
+  fi
 done
-
-# --- Run tests ---
-run_php_test
-run_tests oauth
-run_tests http
-run_tests SeasLog
-run_tests swoole
-if [[ "$vernum" == 8.0 ]]; then
-  run_tests memcache
-fi
