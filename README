@@ -41,9 +41,25 @@ DEPENDENCIES
 "Development tools"
 mysql-devel
 php-devel
+libcurl-devel
+rhash-devel
+autoconf
+libtool
+bison
+libxml2-devel
+bzip2-devel
+libcurl-devel
+libpng-devel
+libicu-devel
+gcc-c++
+libmcrypt-devel
+libwebp-devel
+libjpeg-devel
+openssl-devel
+libxslt-devel
 re2c
 
 PROBLEMS
 This script cannot be run concurrently. This is due to the PEAR directory storing its cache and installs to /tmp/pear/ by default,
-meaning concurrent installs would share this directory. Attempts were made to change this value (line 32)
+meaning concurrent installs would share this directory. Attempts were made to change this value (line 56)
 but no matter which directory, or what permissions, changing this setting only ever returns an error.
