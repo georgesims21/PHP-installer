@@ -1,0 +1,16 @@
+NAME
+PHP-checker for centos8
+
+SYNOPSIS
+./PHP-checker.sh [PHP VERSION]
+
+DESCRIPTION
+Given a PHP VERSION previously installed by PHP-installer, this script will verify that this PHP version is
+installed and working, that common configuration files have not changed since the install and extensions
+are loaded and functional.
+
+This script provides icinga2 check output, once per minute.
+
+SUPPORTED PHP VERSIONS
+8.0, 7.3 and 7.4 can be used with this script, future work can see more added, but these are the main stable versions of PHP
+at the time of writing.
