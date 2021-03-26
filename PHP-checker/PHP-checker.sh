@@ -89,7 +89,7 @@ check_configs() {
 }
 
 while :; do
-
+  endtime=$(date -ud "1 minute" +%s)
   # --- Check php config file for changes ---
   diff "$phpdir"/lib/php.ini "$configdir"/php.ini_backup
   echo_stdout "phpini_config: $?"
@@ -122,7 +122,16 @@ while :; do
       run_tests memcache
     fi
   fi
+  # If no loop flag was specified, exit while loop
   if [[ "$loop" = false ]]; then
     break
   fi
+
+  # I understand that this is not the 'exact' count of 1 minute considering the
+  # function definitions etc before the while loop began, but this was the simplest
+  # solution under the time constraints. Also keeping the loop at one minute avoids
+  # hogging the CPU, if no more than one set of values per minute are needed.
+  while [[ $(date -u +%s) < $endtime ]]; do
+    sleep 1
+  done
 done
