@@ -1,3 +1,7 @@
+#!/bin/bash
+# install-dependencies
+# Created by: George Sims
+
 yum update -y && \
 yum install mysql-devel \
 php-devel \
