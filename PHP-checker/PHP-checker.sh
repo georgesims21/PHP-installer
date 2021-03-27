@@ -3,9 +3,16 @@
 # Please read the README located in this directory before use.
 # Created by: George Sims
 
+avail_versions=(8.0 7.4 7.3)
 vernum=$1
 loop=$2
 runexts=$3
+# Check whether the given version number is included in the avail_versions array
+# https://stackoverflow.com/questions/3685970/check-if-a-bash-array-contains-a-value
+if [[ ! " ${avail_versions[@]} " =~ " ${vernum} " ]]; then
+	echo "Please choose one of the avaliable versions: 8.0, 7.4 or 7.3"
+	exit
+fi
 # If no user input don't loop
 if [[ -z "$loop" ]]; then
   loop=false
@@ -90,11 +97,13 @@ check_configs() {
 
 while :; do
   endtime=$(date -ud "1 minute" +%s)
+
   # --- Check php config file for changes ---
   diff "$phpdir"/lib/php.ini "$configdir"/php.ini_backup
   echo_stdout "phpini_config: $?"
 
   # --- Check extensions are loaded and functional ---
+  # also shows php is functional without running tests
   ext_loaded Xdebug
   ext_loaded http
   ext_loaded OAuth
@@ -131,6 +140,7 @@ while :; do
   # function definitions etc before the while loop began, but this was the simplest
   # solution under the time constraints. Also keeping the loop at one minute avoids
   # hogging the CPU, if no more than one set of values per minute are needed.
+  # https://www.golinuxcloud.com/run-while-loop-until-specific-time-shell-bash/
   while [[ $(date -u +%s) < $endtime ]]; do
     sleep 1
   done
