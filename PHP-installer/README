@@ -6,13 +6,13 @@ sudo ./PHP-installer.sh [PHP VERSION] [MAX THREADS]
 
 DESCRIPTION
 Given a PHP VERSION and a MAX THREADS (most threads used at one time during the 'make' phases of the builds),
-PHP-installer will download and install this version from source (Github). The script also uses this
+PHP-installer will download and install this version from source (Github) into the /opt directory. The script also uses this
 version's own PECL installer to install 5 extensions: pecl_http, memcache, oauth, seaslog and swoole. Finally it will
 install Xdebug from source and install it only for this PHP version.
 
 All installation and binary files for this PHP version and its extensions are located inside the /opt/php-<version> directory.
-The PEAR cache/install/temp files can be found at /opt/php-<ver>/pear-php-<ver>/cache,
-/opt/php-<ver>/pear-php-<ver>/install and /opt/php-<ver>/pear-php-<ver>/temp respectively.
+The PEAR cache/install/temp files can be found at /tmp/pear-php-<ver>/cache,
+/tmp/pear-php-<ver>/install and /tmp/pear-php-<ver>/temp respectively.
 
 Installing in this way allows users to easily find any files related to a particular PHP version, make code changes and
 recompile the PHP version in a single place and also pull files from Github. Separating 'from source' installs from /usr/local/bin and /usr/bin
@@ -80,5 +80,6 @@ to download extensions, they mix up their own PEAR directories with the others. 
 individual PEAR configuration settings were modified to match specific directories (see lines 67-69) meaning
 no PHP's PEAR share any directories, thus no mix ups *should* happen.
 E.g. if 7.3 and 8.0 were being downloaded concurrently, php-7.3's pear install files are located at
-/opt/php-7.3/pear-php-7.3/install, and php-8.0's at /opt/php-8.0/pear-php-8.0/install. When running together
-one, say 7.3, may access /opt/pear-php-8.0/pear-php-8.0/install arbitrarily, leading to an installation error as this is the wrong directory.
+/tmp/pear-php-7.3/install, and php-8.0's at /tmp/pear-php-8.0/install. When running together
+one, say 7.3, may access /tmp/pear-php-8.0/install arbitrarily, leading to an installation error as this is the wrong directory.
+Installing each individually does not see this error occur.

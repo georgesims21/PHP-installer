@@ -1,5 +1,5 @@
 NAME
-PHP-checker for centos8
+PHP-checker for CentOS8
 
 SYNOPSIS
 sudo ./PHP-checker.sh [PHP VERSION] [LOOP] [INCLUDE EXTENSION TESTS]
@@ -13,13 +13,13 @@ leads to a loop lasting longer than 60 seconds.
 
 OUTPUT
 The output format of this script is in the form of 'variable: error', with 1 representing an error and 0 no error. Due to
-time constraints icinga2 compatible format was not made, but an educated guess as to how a monitoring program may read
-data from a source was used instead.
+time constraints icinga2 compatible format was not made, but experience using Prometheus showed that using this format
+allows monitoring programs to store the data easily.
 Verbose output can be found in the /tmp/php-checker.log file, if any errors occur during this script, you will find the output in this log.
 
 FLAGS
 LOOP : loop once per minute
-EXTENSION TESTS : include extension tests (1:17 on an i770u processor with all tests)
+EXTENSION TESTS : include extension tests (>60 seconds on an i770u processor with all tests)
 
 EXAMPLES
 sudo ./PHP-checker.sh 8.0 : run checker on an already installed PHP 8.0
