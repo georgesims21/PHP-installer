@@ -3,9 +3,9 @@
 # Please read the README located in this directory before use.
 # Created by: George Sims
 
+# exit script on error
 set -e
 
-# --- Installing PHP from source ---
 avail_versions=(8.0 7.4 7.3)
 vernum=$1
 threads=$2
@@ -18,8 +18,15 @@ phpdir=/opt/"$version"
 # param 2: version number (must include '-', i.e $ ext_install pecl_http -4.3.2)
 ext_install() {
   printf "\n" | "$pecl" install $1$2
-  echo "==> 'Adding extension=$1.so' to $phpini"
-  echo "extension=$1.so" >> "$phpini"
+  # pecl_http is downloaded but needs http.so in php.ini not pecl_http.so
+  # bad solution but could be improved with more time
+  if [[ $1 == pecl_http ]]; then
+    echo "==> 'Adding extension=$1.so' to $phpini"
+    echo "extension=http.so" >> "$phpini"
+  else
+    echo "==> 'Adding extension=$1.so' to $phpini"
+    echo "extension=$1.so" >> "$phpini"
+  fi
 }
 
 # Check whether the given version number is included in the avail_versions array
@@ -28,10 +35,12 @@ if [[ ! " ${avail_versions[@]} " =~ " ${vernum} " ]]; then
 	echo "Please choose one of the avaliable versions: 8.0, 7.4 or 7.3"
 	exit
 fi
-#if [[ threads > $(nproc) ]]; then
-#  echo "Too many threads, please run with MAX THREADS <= $(nproc))"
-#  exit
-#fi
+if [[ threads > $(nproc) ]]; then
+  echo "Too many threads, please run with MAX THREADS <= $(nproc))"
+  exit
+fi
+
+# --- Installing PHP from source ---
 # Download the tarball from Github into /tmp
 # https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script
 if [[ -f "/tmp/$gitversion.tar.gz" ]]; then
@@ -84,47 +93,20 @@ pear="$phpdir"/bin/pear
 
 # --- Installing extensions ---
 echo "==> Installing extensions for $phpdir"
-#printf "\n" | "$pecl" install raphf
-#echo "==> 'Adding extension=raphf.so' to $phpini"
-#echo "extension=raphf.so" >> "$phpini"
 ext_install raphf
-# Using PHP 8.0 does not require the user to write "extension=<extension-name>" to the php.ini
 if [[ ! "$vernum" == 8.0 ]]; then
   # Dependency not required in 8.0
-#  printf "\n" | "$pecl" install propro
-#  echo "==> 'Adding extension=propro.so' to $phpini"
-#  echo "extension=propro.so" >> "$phpini"
   ext_install propro
   # Different versions of pecl_http are required for 8.0 compared to 7.3 and 7.4
-#	printf "\n" | "$pecl" install pecl_http-3.2.4
 	ext_install pecl_http -3.2.4
 else
   # memcache has compatibility issues <PHP-8.0 I believe with the system installed version
-#  printf "\n" | "$pecl" install memcache
-#  echo "==> 'Adding extension=memcache.so' to $phpini"
-#  echo "extension=memcache.so" >> "$phpini"
   ext_install memcache
-#	printf "\n" | "$pecl" install pecl_http
   ext_install pecl_http
 fi
-cd "$phpdir"/bin
-# Create symlink to the PHP executable named php-<ver>
-ln -sT "$phpdir"/bin/php /usr/bin/"$version"
-# printf "\n" | <pecl install> allows to give default values to extensions. This can be improved depending on user needs
-#printf "\n" | "$pecl" install oauth
-#echo "==> 'Adding extension=oauth.so' to $phpini"
-#echo "extension=oauth.so" >> "$phpini"
 ext_install oauth
-#printf "\n" | "$pecl" install seaslog
-#echo "==> 'Adding extension=seaslog.so' to $phpini"
-#echo "extension=seaslog.so" >> "$phpini"
 ext_install seaslog
-#printf "\n" | "$pecl" install swoole
-#echo "==> 'Adding extension=swoole.so' to $phpini"
-#echo "extension=swoole.so" >> "$phpini"
 ext_install swoole
-#echo "==> 'Adding extension=http.so' to $phpini"
-#echo "extension=http.so" >> "$phpini"
 
 # --- Installing Xdebug without PECL ---
 echo "==> Installing Xdebug from source"
@@ -166,5 +148,8 @@ for dir in $phpdir/ext/*/; do
     cp "$dir"/config.w32 "$configdir"/"$extension"
   fi
 done
+cd "$phpdir"/bin
+# Create symlink to the PHP executable named php-<ver>
+ln -sT "$phpdir"/bin/php /usr/bin/"$version"
 echo "==> $version binary can now be used, e.g. '$ $version -v'. Please use PHP-checker script beforehand"
 echo "==> Install complete"
